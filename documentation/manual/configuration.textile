@@ -1,0 +1,443 @@
+h1. Configuration parameters
+
+A Play application is configured by its @conf/application.conf@ file. A new application created with the @play new@ command has a default configuration file copied from the @$PLAY_HOME/resources/application-skel/conf@ directory.
+
+
+h2(#application). Application configuration
+
+h3(#application.name). application.name
+
+* The application’s name
+
+
+h3(#application.mode). application.mode
+
+Application mode. Set to dev to enable instant reloading and other development help. Otherwise set to prod. Values:
+
+* dev
+* prod
+
+
+h3(#application.secret). application.secret
+
+The secret key is used to secure cryptographics functions
+If you deploy your application to several instances be sure to use the same key.
+
+
+h3(#application.langs). application.langs
+
+Define locales used by your application. You can then place localized messages in @conf/messages.{locale}@ files. Values:
+
+* fr,en,ja
+
+
+h3(#application.session.cookie). application.session.cookie
+
+By default, sessions will be written to the transient PLAY_SESSION cookie.
+The cookies are not secured by default, only set it to true
+if you're serving your pages through https. Values:
+
+* PLAY
+
+
+h3(#application.session.maxAge). application.session.maxAge
+
+Values:
+
+* 1h
+
+h3(#application.session.secure). application.session.secure
+
+Values:
+
+* false
+
+
+h3(#date.format). date.format
+
+Date format. Values:
+
+* yyyy-MM-dd
+
+h3(#date.format.fr). date.format.fr
+
+
+
+h2(#http). Server configuration
+
+
+h3(#http.port). http.port
+
+If you need to change the HTTP port, uncomment this (default is set to 9000). Values:
+
+* 9000
+
+
+h3(#http.address). http.address
+
+By default the server listen for HTTP on the wilcard address. You can restrict this. Values:
+
+* 127.0.0.1
+
+
+h3(#http.path). http.path
+
+Use this if you don't host your Play application at the root of the domain
+you're serving it from. This parameter has no effect when deployed as a
+war, because the path will be handled by the application server. Values:
+
+* /
+
+
+Session/Cookie sharing between subdomain
+~~~~~~~~~~~~~~~~~~~~~~
+By default a cookie is only valid for a specific domain. By setting
+application.defaultCookieDomain to '.example.com', the cookies
+will be valid for all domains ending with '.example.com', ie:
+foo.example.com and bar.example.com
+
+h3(#application.defaultCookieDomain). application.defaultCookieDomain
+
+Values:
+
+* .example.com
+
+JVM configuration
+~~~~~
+Define which port is used by JPDA when application is in debug mode (default is set to 8000)
+
+h3(#jpda.port). jpda.port
+
+Values:
+
+* 8000
+
+h3(#Java source level ). Java source level 
+
+Values:
+
+* > 1.5, 1.6 or 1.7 (experimental)
+
+h3(#java.source). java.source
+
+Values:
+
+* 1.5
+
+Log level
+~~~~~
+Specify log level for your application.
+If you want a very customized log, create a log4j.properties file in the conf directory
+
+h3(#application.log). application.log
+
+Values:
+
+* INFO
+
+More logging configuration
+
+h3(#application.log.path). application.log.path
+
+Values:
+
+* /log4j.properties
+
+h3(#application.log.system.out). application.log.system.out
+
+Values:
+
+* off
+
+Database configuration
+~~~~~ 
+Enable a database engine if needed.
+
+To quickly set up a development database, use either:
+
+h3(#db). db
+
+Values:
+
+* mem
+* mem : for a transient in memory database (H2 in memory)
+* fs  : for a simple file written database (H2 file stored)
+
+To connect to a local MySQL5 database, use:
+
+h3(#db). db
+
+Values:
+
+* mysql:user:pwd@database_name
+
+If you need a full JDBC configuration use the following :
+
+h3(#db.url). db.url
+
+Values:
+
+* jdbc:postgresql:database_name
+
+h3(#db.driver). db.driver
+
+Values:
+
+* org.postgresql.Driver
+
+h3(#db.user). db.user
+
+Values:
+
+* root
+
+h3(#db.pass). db.pass
+
+Values:
+
+* secret
+
+Connections pool configuration :
+
+h3(#db.pool.timeout). db.pool.timeout
+
+Values:
+
+* 1000
+
+h3(#db.pool.maxSize). db.pool.maxSize
+
+Values:
+
+* 30
+
+h3(#db.pool.minSize). db.pool.minSize
+
+Values:
+
+* 10
+#
+If you want to reuse an existing Datasource from your application server, use:
+
+h3(#db). db
+
+Values:
+
+* java:/comp/env/jdbc/myDatasource
+
+When using an existing Datasource, it's sometimes needed to destroy it when
+the application is stopped. Depending on the datasource, you can define a
+generic "destroy" method :
+
+h3(#db.destroyMethod). db.destroyMethod
+
+Values:
+
+* close
+
+JPA Configuration (Hibernate)
+~~~~~
+
+Specify the custom JPA dialect to use here (default to guess):
+
+h3(#jpa.dialect). jpa.dialect
+
+Values:
+
+* org.hibernate.dialect.PostgreSQLDialect
+
+Specify the ddl generation pattern to use. Set to none to disable it 
+(default to update in DEV mode, and none in PROD mode):
+
+h3(#jpa.ddl). jpa.ddl
+
+Values:
+
+* update
+
+Debug SQL statements (logged using DEBUG level):
+
+h3(#jpa.debugSQL). jpa.debugSQL
+
+Values:
+
+* true
+
+You can even specify additional hibernate properties here:
+
+h3(#hibernate.use_sql_comments). hibernate.use_sql_comments
+
+Values:
+
+* true
+
+Store path for Blob content
+
+h3(#attachments.path). attachments.path
+
+Values:
+
+* data/attachments
+
+Memcached configuration
+~~~~~ 
+Enable memcached if needed. Otherwise a local cache is used.
+
+h3(#memcached). memcached
+
+Values:
+
+* enabled
+
+Specify memcached host (default to 127.0.0.1:11211)
+
+h3(#memcached.host). memcached.host
+
+Values:
+
+* 127.0.0.1:11211
+
+Or you can specify multiple host to build a distributed cache
+
+h3(#memcached.1.host). memcached.1.host
+
+Values:
+
+* 127.0.0.1:11211
+
+h3(#memcached.2.host). memcached.2.host
+
+Values:
+
+* 127.0.0.1:11212
+
+HTTP Response headers control for static files
+~~~~~
+Set the default max-age, telling the user's browser how long it should cache the page.
+Default is 3600 (one hour). Set it to 0 to send no-cache.
+This is only read in prod mode, in dev mode the cache is disabled.
+
+h3(#http.cacheControl). http.cacheControl
+
+Values:
+
+* 3600
+
+If enabled, Play will generate entity tags automatically and send a 304 when needed.
+Default is true, set it to false to deactivate use of entity tags.
+
+h3(#http.useETag). http.useETag
+
+Values:
+
+* true
+
+Custom mime types
+
+h3(#mimetype.xpi). mimetype.xpi
+application/x-xpinstall
+
+WS configuration
+~~~~~
+Default engine is Async Http Client, uncomment to use
+the JDK's internal implementation
+
+h3(#webservice ). webservice 
+
+Values:
+
+* urlfetch
+If you need to set proxy params for WS requests
+
+h3(#http.proxyHost ). http.proxyHost 
+
+Values:
+
+* localhost
+
+h3(#http.proxyPort ). http.proxyPort 
+
+Values:
+
+* 3128
+
+h3(#http.proxyUser ). http.proxyUser 
+
+Values:
+
+* jojo
+
+h3(#http.proxyPassword ). http.proxyPassword 
+
+Values:
+
+* jojo
+
+Mail configuration
+~~~~~ 
+Default is to use a mock Mailer
+
+h3(#mail.smtp). mail.smtp
+
+Values:
+
+* mock
+
+Or, specify mail host configuration
+
+h3(#mail.smtp.host). mail.smtp.host
+
+Values:
+
+* 127.0.0.1
+
+h3(#mail.smtp.user). mail.smtp.user
+
+Values:
+
+* admin
+
+h3(#mail.smtp.pass). mail.smtp.pass
+
+
+h3(#mail.smtp.channel). mail.smtp.channel
+
+Values:
+
+* ssl
+
+Url-resolving in Jobs
+~~~~~~
+When rendering templates with reverse-url-resoling (@@{..}) in Jobs (which do not have an inbound Http.Request),
+ie if sending a HtmlMail, Play need to know which url your users use when accessing your app.
+
+h3(#%test.application.baseUrl). %test.application.baseUrl
+
+Values:
+
+* http://localhost:9000/
+
+h3(#%prod.application.baseUrl). %prod.application.baseUrl
+
+Values:
+
+* http://www.yourdomain.com/
+
+h3(#play.jobs.pool). play.jobs.pool
+
+Size of the Jobs pool. Values:
+
+* 10
+
+h3(#play.pool). play.pool
+
+Execution pool. Default to 1 thread in DEV mode or (nb processors + 1) threads in PROD mode. Try to keep a low as possible. 1 thread will serialize all requests (very useful for debugging purpose). Values:
+
+* 3
+
+h3(#play.editor). play.editor
+
+Open file from errors pages. If your text editor supports opening files by URL, Play! will dynamically link error pages to files. Values:
+
+* @txmt://open?url=file://%s&line=%s@ for Textmate
+
