@@ -2,6 +2,10 @@ h1. Configuration parameters
 
 Configure your Play application by setting values for configuration keys in @conf/application.conf@ file. The @play new@ command copies a default configuration file from the @$PLAY_HOME/resources/application-skel/conf@ directory.
 
+See also:
+
+* "Put your application in production":production
+* "Main concepts - the conf directory":main#conf
 
 h2(#application). Application configuration
 
@@ -34,6 +38,8 @@ Specifies log level for your application. For example:
 
 * @INFO@
 
+See also: "Logging configuration":logs.
+
 
 h3(#application.log.path). application.log.path
 
@@ -52,7 +58,7 @@ h3(#application.mode). application.mode
 Application mode. Values:
 
 * @dev@ - enable instant reloading and other development help
-* @prod@ - pre-compiles classes.
+* @prod@ - pre-compiles and caches Java sources and templates.
 
 
 h3(#application.name). application.name
@@ -74,14 +80,25 @@ Session cookie name. By default, sessions will be written to the transient @PLAY
 
 h3(#application.session.maxAge). application.session.maxAge
 
-Session time-out, i.e. the maximum age of the session cookie.
+Session time-out, i.e. the maximum age of the session cookie. If not set, the session expires when you close your web browser. For example:
 
 * @1h@
+* @application.session.maxAge=7d@ - Remember for one week.
+
 
 h3(#application.session.secure). application.session.secure
 
 * @false@
 * @true@
+
+
+h3(#application.web_encoding). application.web_encoding
+
+The text encoding that Play uses when communicating with the web browser and for the "Web Service client":libs#WebServiceclient. You do not normally need to set this, since Play defaults to using @UTF-8@. For example:
+
+* @application.web_encoding=ISO-8859-1@
+
+Changing @application.web_encoding@ affects the @charset@ part of the @Content-type@ HTTP header. It also affects which encoding is used when transmitting rendered dynamic results, but it **does not** affect the bytes sent when Play serves static content: So, if you have modified the default response encoding and you have static text-files (in the @public/@ folder) that contain special characters, you must make sure that these files are stored according to the specified encoding. All other files should be stored in UTF-8.
 
 
 h2(#attachments). Attachments
@@ -103,7 +120,7 @@ Sets the default date format, using a @java.text.SimpleDateFormat@ pattern. For 
 
 * @yyyy-MM-dd@
 
-You can also set a different date format for specific locales, for example:
+You can also set a different date format for specific languages that you have configured with "application.langs":#application.langs, for example:
 
 * @date.format.fr=dd-MM-yyyy@
 
@@ -118,6 +135,8 @@ Database engine configuration. To quickly set up a development database use an H
 * @fs@ - for a simple file written database (H2 file stored)
 * <code>mysql:user:pwd@database_name</code> - to connect to a local MySQL5 database
 * @java:/comp/env/jdbc/myDatasource@ - reuse an existing Datasource from your application server.
+
+If you specify a @Datasource@, the database plugin detects the pattern @db=java:@ and will de-activate the default JDBC system.
 
 
 h3(#db.destroyMethod). db.destroyMethod
@@ -295,9 +314,12 @@ h2(#memcachedconfig). Memcached
 
 h3(#memcached). memcached
 
-Enable memcached if needed. Otherwise a local cache is used.
+Enable "Memcached":http://www.danga.com/memcached/; if you don’t configure Memcached, Play will use a standalone cache that stores data in the JVM heap.
 
 * @enabled@
+
+See also: "using a cache":cache.
+
 
 h3(#memcached.host). memcached.host
 
@@ -336,6 +358,8 @@ Simple mail configuration key. For example:
 
 * @mock@ (default) - use a mock Mailer
 
+See also: "SMTP configuration":emails#smtp.
+
 
 h3(#mail.smtp.host). mail.smtp.host
 
@@ -357,9 +381,10 @@ SMTP server password, used with "mail.smtp.host":#mail.smtp.host, e.g. a GMail p
 
 h3(#mail.smtp.channel). mail.smtp.channel
 
-SMTP connection type, used with "mail.smtp.host":#mail.smtp.host. Values:
+SMTP encrypted channel configuration, used with "mail.smtp.host":#mail.smtp.host. Values:
 
-* @ssl@
+* @ssl@ - SMTP-over-SSL (SMTPS) connector; an SSL socket listening on port 465
+* @starttls@ - a clear connection on port 25 that will switch to SSL/TLS, if your server supports the @starttls@ command (see: "RFC 2487":http://www.apps.ietf.org/rfc/rfc2487.html).
 
 
 h2(#play). Play run-time
