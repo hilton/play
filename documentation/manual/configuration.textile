@@ -1,6 +1,8 @@
 h1. Configuration parameters
 
-Configure your Play application by setting values for configuration keys in @conf/application.conf@ file. The @play new@ command copies a default configuration file from the @$PLAY_HOME/resources/application-skel/conf@ directory.
+Configure your Play application by setting values for configuration keys in @conf/application.conf@ file.
+
+The @play new@ command copies a default configuration file from the @$PLAY_HOME/resources/application-skel/conf@ directory.
 
 See also:
 
@@ -17,18 +19,18 @@ The application base URL used for reverse-resolving absolute URLs. This is used 
 
 bc. application.baseUrl=http://localhost:9000/
 
-For @prod@ mode
+For @prod@ mode:
 
 bc. %production%.application.baseUrl=http://www.yourdomain.com/
 
 
 h3(#application.defaultCookieDomain). application.defaultCookieDomain
 
-Enables session/cookie sharing between subdomains. By default a cookie is only valid for a specific domain. For example:
+Enables session/cookie sharing between subdomains. For example, to make cookies valid for all domains ending with ‘.example.com’, e.g. @foo.example.com@ and @bar.example.com@:
 
 bc. application.defaultCookieDomain=.example.com
 
-Cookies will be valid for all domains ending with ‘.example.com’, e.g. @foo.example.com@ and @bar.example.com@
+Default: a cookie is only valid for a specific domain. 
 
 
 h3(#application.langs). application.langs
@@ -83,10 +85,12 @@ The secret key is used to secure cryptographics functions, usually set by the @p
 
 h3(#application.session.cookie). application.session.cookie
 
-Session cookie name. By default, sessions will be written to the transient @PLAY_SESSION@ cookie. The cookies are not secured by default, only set it to true if you’re serving your pages through HTTPS. For example:
+Session cookie name. The cookies are not secured by default, only set it to true if you’re serving your pages through HTTPS. For example:
 
 bc. application.session.cookie=PLAY
 
+Default: sessions are written to the transient @PLAY_SESSION@ cookie.
+ 
 
 h3(#application.session.maxAge). application.session.maxAge
 
@@ -111,6 +115,8 @@ h3(#application.web_encoding). application.web_encoding
 The text encoding that Play uses when communicating with the web browser and for the "Web Service client":libs#WebServiceclient. You do not normally need to set this, since Play defaults to using @UTF-8@. For example:
 
 bc. application.web_encoding=ISO-8859-1
+
+Default: @UTF-8@
 
 Changing @application.web_encoding@ affects the @charset@ part of the @Content-type@ HTTP header. It also affects which encoding is used when transmitting rendered dynamic results, but it **does not** affect the bytes sent when Play serves static content: So, if you have modified the default response encoding and you have static text-files (in the @public/@ folder) that contain special characters, you must make sure that these files are stored according to the specified encoding. All other files should be stored in UTF-8.
 
@@ -160,6 +166,8 @@ To reuse an existing Datasource from your application server:
 bc. db=java:/comp/env/jdbc/myDatasource@
 
 If you specify a @Datasource@, the database plugin detects the pattern @db=java:@ and will de-activate the default JDBC system.
+
+Default: none.
 
 
 h3(#db.destroyMethod). db.destroyMethod
@@ -226,10 +234,12 @@ h2(#http). Server configuration
 
 h3(#http.address). http.address
 
-HTTP listender address. By default the server listens for HTTP on the wilcard address. You can restrict this. For example:
+HTTP listener address, to restrict addresses the server listens on. For example:
 
 bc. http.address=127.0.0.1
 
+Default: the server listens for HTTP on the wilcard address.
+ 
 
 h3(#http.cacheControl). http.cacheControl
 
@@ -237,23 +247,23 @@ HTTP Response headers control for static files: sets the default max-age in seco
 
 bc. http.cacheControl=0
 
-To set cache expiry to one hour (the default):
-
-bc. http.cacheControl=3600
+Default: @3600@ - set cache expiry to one hour.
 
 
 h3(#http.path). http.path
 
 The URL path where the application runs on the server: use this if you do not host your Play application at the root of the domain you’re serving it from. This parameter has no effect when deployed as a WAR, because the path will be handled by the application server. For example:
 
-* @/@ (default)
+bc. http.path=/myapp/
+
+Default: @/@
 
 
 h3(#http.port). http.port
 
 The port that the HTTP server listens on. 
 
-* @9000@ (default).
+Default: @9000@
 
 
 h3(#http.proxyHost). http.proxyHost
@@ -282,10 +292,11 @@ Proxy password for web services requests.
 
 h3(#http.useETag). http.useETag
 
-If enabled, Play will generate entity tags automatically and send a 304 when needed. Values:
+If enabled, Play will generate entity tags automatically and send a 304 when needed. For example, to deactivate use of entity tags:
 
-* @true@ (default)
-* @false@ - deactivate use of entity tags
+bc. http.useETag=false
+
+Default: @true@
 
 
 h2(#java). Java source
@@ -293,11 +304,11 @@ h2(#java). Java source
 
 h3(#java.source). java.source
 
-Java source level. Values:
+Java source level. For example:
 
-* @1.5@
-* @1.6@
-* @1.7@ (experimental)
+bc. java.source=1.5
+
+Values:  @1.5@, @1.6@, @1.7@ (experimental).
 
 
 h2(#jpa). JPA
@@ -305,9 +316,11 @@ h2(#jpa). JPA
 
 h3(#jpa.dialect). jpa.dialect
 
-Specify the custom JPA dialect to use here; the default is to guess the dialect. For exmaple:
+Specify the custom JPA dialect to use here. For exmaple:
 
 bc. jpa.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+Default: Play will guess the dialect.
 
 
 h3(#jpa.ddl). jpa.ddl
@@ -335,7 +348,7 @@ h3(#jpda.port). jpda.port
 
 Defines which port is used by JPDA when application is in debug mode. For example:
 
-* @8000@ (default)
+Default: @8000@
 
 
 h2(#memcachedconfig). Memcached
@@ -393,9 +406,9 @@ bc. mail.debug=true
 
 h3(#mail.smtp). mail.smtp
 
-Simple mail configuration key. For example:
+Simple mail configuration key.
 
-* @mock@ (default) - use a mock Mailer
+Default: @mock@ - use a mock Mailer
 
 See also: "SMTP configuration":emails#smtp.
 
@@ -446,9 +459,9 @@ h2(#play). Play run-time
 
 h3(#play.editor). play.editor
 
-Open file from error pages. If your text editor supports opening files by URL, Play will dynamically link error pages to files. For example:
+Open file from error pages. If your text editor supports opening files by URL, Play will dynamically link error pages to files. For Textmate, for example:
 
-bc. play.editor=txmt://open?url=file://%s&line=%s@ for Textmate
+bc. play.editor=txmt://open?url=file://%s&line=%s
 
 
 h3(#play.jobs.pool). play.jobs.pool
