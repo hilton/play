@@ -77,6 +77,7 @@ h3(#application.name). application.name
 
 The application’s name, usually set by the @play new@ command.
 
+Default: @(not set)@
 
 h3(#application.secret). application.secret
 
@@ -131,6 +132,8 @@ h3(#attachments.path). attachments.path
 Store path for Blob content. For example:
 
 bc. attachments.path=data/attachments
+
+Default: @attachments@
 
 
 h2(#certificate). X509 certificates
@@ -250,6 +253,18 @@ h3(#db.user). db.user
 Database connection user name, used with "db.url":#db.url.
 
 
+h2(#evolutions). Database evoluations
+
+
+h3(#evolutions.enabled). evolutions.enabled
+
+Used to disable "database evolutions":evolutions.
+
+bc. evolutions.enabled=false
+
+Default: @true@
+
+
 h2(#hibernate). Hibernate
 
 You can specify additional hibernate properties. For example, to enable SQL comments:
@@ -341,11 +356,13 @@ h2(#java). Java source
 
 h3(#java.source). java.source
 
-Java source level. For example:
+Java source level, which overrides the @java.version@ system property. For example:
 
-bc. java.source=1.5
+bc. java.source=1.6
 
 Values:  @1.5@, @1.6@, @1.7@ (experimental).
+
+Default: @1.5@
 
 
 h2(#jpa). JPA
@@ -362,13 +379,11 @@ Default: Play will guess the dialect.
 
 h3(#jpa.ddl). jpa.ddl
 
-Specify the DDL generation pattern to use. For example, to disable database structure updates, useful for @prod@ mode:
+Specify the DDL generation pattern to use. For example, to enable automatic database structure updates. For example:
 
-bc. jpa.ddl=none
+bc. jpa.ddl=create-drop
 
-To enable automatic database updates, useful for @dev@ mode:
-
-bc. jpa.ddl=update
+Default: @update@ (@dev@ mode) or @none@ (@prod@ mode).
 
 
 h3(#jpa.debugSQL). jpa.debugSQL
@@ -376,6 +391,22 @@ h3(#jpa.debugSQL). jpa.debugSQL
 Debug SQL statements (logged using DEBUG level). For example:
 
 bc. jpa.debugSQL=true
+
+Default: @false@
+
+
+h3(#jpa.entities). jpa.entities
+
+Names of additional JPA entity classes to load.
+
+Default: none.
+
+
+h3(#jpa.mapping-file). jpa.mapping-file
+
+JPA mapping file.
+
+Default: none.
 
 
 h2(#jpda). JVM
@@ -420,6 +451,8 @@ h3(#memcached). memcached
 Enable "Memcached":http://www.danga.com/memcached/; if you don’t configure Memcached, Play will use a standalone cache that stores data in the JVM heap.
 
 bc. memcached=enabled
+
+Default: @disabled@
 
 See also: "using a cache":cache.
 
@@ -518,6 +551,15 @@ SMTP server user name, used with "mail.smtp.host":#mail.smtp.host, e.g. a GMail 
 h2(#play). Play run-time
 
 
+h3(#play.bytecodeCache). play.bytecodeCache
+
+Used to disable the bytecode cache in @dev@ mode; has no effect in @prod@ mode.
+
+bc. play.bytecodeCache=false
+
+Default: @true@
+
+
 h3(#play.editor). play.editor
 
 Open file from error pages. If your text editor supports opening files by URL, Play will dynamically link error pages to files. For Textmate, for example:
@@ -553,7 +595,6 @@ Keystore configuration, for use with the "keystore.file":#keystore.file configur
 bc. ssl.KeyManagerFactory.algorithm=SunX509
 
 
-
 h2(#trustmanager). trustmanager
 
 
@@ -562,3 +603,16 @@ h3(#trustmanager.algorithm). trustmanager.algorithm
 Trustmanager configuration, for use with "X509 certificates":#certificate and "keystore":#keystore configurations.
 
 bc. trustmanager.algorithm=JKS
+
+
+h2(#upload). File upload
+
+h3(#upload.threshold). upload.threshold
+
+TODO. First parameter to @org.apache.commons.io.output.DeferredFileOutputStream(int, File)@
+
+For example:
+
+bc. upload.threshold=20480
+
+Default: @10240@
