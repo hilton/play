@@ -33,6 +33,15 @@ bc. application.defaultCookieDomain=.example.com
 Default: a cookie is only valid for a specific domain.
 
 
+h3(#application.lang.cookie). application.lang.cookie
+
+The name of the cookie that is used to store the current language, set by @play.i18n.Lang.change(String lang)@, which you can change if you want separate language settings for separate Play applications. For example:
+
+bc. application.lang.cookie=MYAPP_LANG
+
+Default: @PLAY_LANG@
+
+
 h3(#application.langs). application.langs
 
 Defines locales used by your application. You can then place localized messages in @conf/messages.{locale}@ files. The value is a comma-separated list of language codes, for example:
@@ -158,6 +167,13 @@ h3(#certificate.password). certificate.password
 Password for a password-protected X509 certificate key file, for use with the "certificate.key.file":#certificate.key.file configuration. For example:
 
 bc. certificate.password=secret
+
+
+h2(#cron). Scheduled jobs
+
+You can configure cron expressions for scheduled jobs as configuration keys that start with @cron.@ and use the key as the value of a <code>@play.jobs.On</code> annotation. For example, <code>@On(cron.noon)</code> refers to:
+
+bc. cron.noon=0 0 12 * * ?
 
 
 h2(#date). Date formats
@@ -571,7 +587,9 @@ h3(#play.jobs.pool). play.jobs.pool
 
 Size of the Jobs pool. For example:
 
-bc. play.jobs.pool=10
+bc. play.jobs.pool=20
+
+Default: @10@
 
 
 h3(#play.pool). play.pool
