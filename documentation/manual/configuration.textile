@@ -30,7 +30,7 @@ Enables session/cookie sharing between subdomains. For example, to make cookies 
 
 bc. application.defaultCookieDomain=.example.com
 
-Default: a cookie is only valid for a specific domain. 
+Default: a cookie is only valid for a specific domain.
 
 
 h3(#application.langs). application.langs
@@ -80,7 +80,9 @@ The application’s name, usually set by the @play new@ command.
 
 h3(#application.secret). application.secret
 
-The secret key is used to secure cryptographics functions, usually set by the @play new@ command. If you deploy your application to several instances be sure to use the same key.
+The secret key is used to secure cryptographics functions, usually set by the @play new@ or @play secret@ command. If you deploy your application to several instances be sure to use the same key. For example:
+
+bc. application.secret=mNuAvlsFVjeuynN4IWZxZzFOHYVagafzjruHmWTL26VISKr46rUtyGcJuX7aYx4q
 
 
 h3(#application.session.cookie). application.session.cookie
@@ -90,7 +92,7 @@ Session cookie name. The cookies are not secured by default, only set it to true
 bc. application.session.cookie=PLAY
 
 Default: sessions are written to the transient @PLAY_SESSION@ cookie.
- 
+
 
 h3(#application.session.maxAge). application.session.maxAge
 
@@ -100,7 +102,7 @@ bc. application.session.maxAge=1h
 
 Remember the session for one week:
 
-bc. application.session.maxAge=7d 
+bc. application.session.maxAge=7d
 
 
 h3(#application.session.secure). application.session.secure
@@ -131,6 +133,30 @@ Store path for Blob content. For example:
 bc. attachments.path=data/attachments
 
 
+h2(#certificate). X509 certificates
+
+
+h3(#certificate.key.file). certificate.key.file
+
+Specifies an X509 certificate key, for HTTPS support. The file must be named @host.key@. For example:
+
+bc. certificate.key.file=conf/host.key
+
+
+h3(#certificate.file). certificate.file
+
+Specifies an X509 certificate file, for HTTPS support. The file must be named @host.cert@. For example:
+
+bc. certificate.file=conf/host.cert
+
+
+h3(#certificate.password). certificate.password
+
+Password for a password-protected X509 certificate key file, for use with the "certificate.key.file":#certificate.key.file configuration. For example:
+
+bc. certificate.password=secret
+
+
 h2(#date). Date formats
 
 
@@ -154,11 +180,11 @@ Database engine configuration. To quickly set up a development database use a tr
 bc. db=mem
 
 For a simple file written database (H2 file stored):
- 
+
 bc. db=fs
 
 For a local MySQL5 database:
- 
+
 bc. db=mysql:user:pwd@database_name
 
 To reuse an existing Datasource from your application server:
@@ -168,6 +194,8 @@ bc. db=java:/comp/env/jdbc/myDatasource@
 If you specify a @Datasource@, the database plugin detects the pattern @db=java:@ and will de-activate the default JDBC system.
 
 Default: none.
+
+See also: "Support for multiple databases":model#multiple.
 
 
 h3(#db.destroyMethod). db.destroyMethod
@@ -228,6 +256,8 @@ You can specify additional hibernate properties. For example, to enable SQL comm
 
 bc. hibernate.use_sql_comments=true
 
+See also: "Using JPA with multiple databases":jpa#multiple.
+
 
 h2(#http). Server configuration
 
@@ -239,7 +269,7 @@ HTTP listener address, to restrict addresses the server listens on. For example:
 bc. http.address=127.0.0.1
 
 Default: the server listens for HTTP on the wilcard address.
- 
+
 
 h3(#http.cacheControl). http.cacheControl
 
@@ -261,7 +291,7 @@ Default: @/@
 
 h3(#http.port). http.port
 
-The port that the HTTP server listens on. 
+The port that the HTTP server listens on.
 
 Default: @9000@
 
@@ -273,19 +303,19 @@ Proxy server for web services requests. For example:
 bc. http.proxyHost=localhost
 
 
-h3(#http.proxyPort). http.proxyPort 
+h3(#http.proxyPort). http.proxyPort
 
 Proxy port for web services requests. For example:
 
 bc. http.proxyPort=3128
 
 
-h3(#http.proxyUser). http.proxyUser 
+h3(#http.proxyUser). http.proxyUser
 
 Proxy user for web services requests.
 
 
-h3(#http.proxyPassword). http.proxyPassword 
+h3(#http.proxyPassword). http.proxyPassword
 
 Proxy password for web services requests.
 
@@ -297,6 +327,13 @@ If enabled, Play will generate entity tags automatically and send a 304 when nee
 bc. http.useETag=false
 
 Default: @true@
+
+
+h3(#https.port). https.port
+
+Enables an HTTPS connector, listening on the specified port. For example:
+
+bc. https.port=9443
 
 
 h2(#java). Java source
@@ -316,7 +353,7 @@ h2(#jpa). JPA
 
 h3(#jpa.dialect). jpa.dialect
 
-Specify the custom JPA dialect to use here. For exmaple:
+Specify the custom JPA dialect to use here. For example:
 
 bc. jpa.dialect=org.hibernate.dialect.PostgreSQLDialect
 
@@ -351,6 +388,30 @@ Defines which port is used by JPDA when application is in debug mode. For exampl
 Default: @8000@
 
 
+h2(#keystore). keystore
+
+
+h3(#keystore.algorithm). keystore.algorithm
+
+Keystore configuration, for use with the "keystore.file":#keystore.file configuration.
+
+bc. keystore.algorithm=JKS
+
+
+h3(#keystore.file). keystore.file
+
+Specifies a keystore certificate, for HTTPS support. The file should be named @certificate.jks@. For example:
+
+bc. keystore.file=conf/certificate.jks
+
+
+h3(#keystore.password). keystore.password
+
+Keystore configuration, for use with the "keystore.file":#keystore.file configuration.
+
+bc. keystore.password=secret
+
+
 h2(#memcachedconfig). Memcached
 
 
@@ -379,7 +440,7 @@ memcached.2.host=127.0.0.1:11212
 
 h2(#mimetype). Custom mime types
 
-You can declare additional MIME types. For example: 
+You can declare additional MIME types. For example:
 
 bc. mimetype.xpi=application/x-xpinstall
 
@@ -392,7 +453,7 @@ Web services configuration. For example, to use the JDK’s internal implementat
 
 bc. webservice=urlfetch
 
-Default: the engine is Async Http Client. 
+Default: the engine is Async Http Client.
 
 
 h2(#mail). Mail
@@ -478,3 +539,26 @@ Execution pool size. Try to keep this as low as possible. Setting this to 1 thre
 bc. play.pool=10
 
 Default: @1@ (in @dev@ mode), number of processors + 1 (in @prod@ mode).
+
+
+h2(#ssl). SSL
+
+See also: "https.port":#https.port.
+
+
+h3(#ssl.KeyManagerFactory.algorithm). ssl.KeyManagerFactory.algorithm
+
+Keystore configuration, for use with the "keystore.file":#keystore.file configuration.
+
+bc. ssl.KeyManagerFactory.algorithm=SunX509
+
+
+
+h2(#trustmanager). trustmanager
+
+
+h3(#trustmanager.algorithm). trustmanager.algorithm
+
+Trustmanager configuration, for use with "X509 certificates":#certificate and "keystore":#keystore configurations.
+
+bc. trustmanager.algorithm=JKS
