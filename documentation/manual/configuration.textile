@@ -35,7 +35,9 @@ Default: a cookie is only valid for a specific domain.
 
 h3(#application.lang.cookie). application.lang.cookie
 
-Cookie name used to store the language value specified by a call to @play.i18n.Lang.change(String locale)@.
+The name of the cookie that is used to store the current language, set by @play.i18n.Lang.change(String locale)@, which you can change if you want separate language settings for separate Play applications. For example:
+
+bc. application.lang.cookie=MYAPP_LANG
 
 Default: @PLAY_LANG@
 
@@ -204,9 +206,9 @@ bc. certificate.password=secret
 
 h2(#cron). Scheduled jobs
 
-Use configuration keys that start with @cron.@ to specify named values for the <code>@On</code> and <code>@Every</code> annotations. For example:
+You can configure cron expressions for scheduled jobs as configuration keys that start with @cron.@ and use the key as the value of a <code>@play.jobs.On</code> or <code>@Every</code> annotation. For example, <code>@On(cron.noon)</code> refers to:
 
-bc. cron.noonDaily=0 0 12 * * ?
+bc. cron.noon=0 0 12 * * ?
 
 
 h2(#date). Date formats
@@ -686,7 +688,9 @@ h3(#play.jobs.pool). play.jobs.pool
 
 Size of the Jobs pool. For example:
 
-bc. play.jobs.pool=10
+bc. play.jobs.pool=20
+
+Default: @10@
 
 
 h3(#play.netty.clientAuth). play.netty.clientAuth
