@@ -1,10 +1,6 @@
 h1. Configuration parameters
 
-Configure your Play application by setting values for configuration keys in @conf/application.conf@ file.
-
-The @play new@ command copies a default configuration file from the @$PLAY_HOME/resources/application-skel/conf@ directory.
-
-See also:
+Configure your Play application by setting values for configuration keys in @conf/application.conf@ file. See also:
 
 * "Main concepts - the conf directory":main#conf
 * "Managing application.conf in several environments":ids
@@ -48,6 +44,8 @@ Defines locales used by your application. You can then place localized messages 
 
 bc. application.langs=fr,en,ja
 
+Default: no additional languages.
+
 
 h3(#application.log). application.log
 
@@ -78,34 +76,36 @@ bc. application.log.recordCaller=true
 Default: @false@
 
 
-h3(#application.log.system.out). application.log.system.out
-
-bc. application.log.system.out=off
-
-
 h3(#application.mode). application.mode
 
-Application mode. For example:
+Application mode (case insensitive). For example:
 
-bc. application.mode=dev
+bc. application.mode=prod
 
 Values:
 
-* @dev@ - enable instant reloading and other development help
-* @prod@ - pre-compiles and caches Java sources and templates.
+* @DEV@ - enable instant reloading and other development help
+* @PROD@ - pre-compiles and caches Java sources and templates.
+
+Default: @DEV@
 
 
 h3(#application.name). application.name
 
 The application’s name, usually set by the @play new@ command.
 
-Default: @(not set)@
+Default: no value.
+
 
 h3(#application.secret). application.secret
 
 The secret key is used to secure cryptographics functions, usually set by the @play new@ or @play secret@ command. If you deploy your application to several instances be sure to use the same key. For example:
 
 bc. application.secret=mNuAvlsFVjeuynN4IWZxZzFOHYVagafzjruHmWTL26VISKr46rUtyGcJuX7aYx4q
+
+If not set, @play.libs.Crypto.sign@ will not encrypt messages; in particular, sessions will not be encrypted.
+
+Default: no value.
 
 
 h3(#application.session.cookie). application.session.cookie
@@ -119,13 +119,13 @@ Default: sessions are written to the transient @PLAY_SESSION@ cookie.
 
 h3(#application.session.httpOnly). application.session.httpOnly
 
-Set the cookie to ‘HTTP only’. For example:
+Enables the ‘HTTP only’ flag on cookies, which mitigates some XSS attacks. For example:
 
 bc. application.session.httpOnly=true
 
 Default: @false@
 
-TODO: see http://www.owasp.org/index.php/HttpOnly
+For more information see the "OWASP page on HttpOnly":http://www.owasp.org/index.php/HttpOnly.
 
 
 h3(#application.session.maxAge). application.session.maxAge
@@ -141,7 +141,7 @@ bc. application.session.maxAge=7d
 
 h3(#application.session.secure). application.session.secure
 
-Enables session for HTTPS. For example:
+Enables Cookie-based sessions for HTTPS connections. For example:
 
 bc. application.session.secure=true
 
@@ -173,7 +173,7 @@ h2(#attachments). Attachments
 
 h3(#attachments.path). attachments.path
 
-Store path for Blob content. For example:
+Storage path for @play.db.jpa.Blob@ content. For example:
 
 bc. attachments.path=data/attachments
 
@@ -187,14 +187,18 @@ h3(#certificate.key.file). certificate.key.file
 
 Specifies an X509 certificate key, for HTTPS support. The file must be named @host.key@. For example:
 
-bc. certificate.key.file=conf/host.key
+bc. certificate.key.file=/certificates/host.key
+
+Default: @conf/host.key@
 
 
 h3(#certificate.file). certificate.file
 
 Specifies an X509 certificate file, for HTTPS support. The file must be named @host.cert@. For example:
 
-bc. certificate.file=conf/host.cert
+bc. certificate.file=/certificates/host.cert
+
+Default: @conf/host.cert@
 
 
 h3(#certificate.password). certificate.password
@@ -202,6 +206,8 @@ h3(#certificate.password). certificate.password
 Password for a password-protected X509 certificate key file, for use with the "certificate.key.file":#certificate.key.file configuration. For example:
 
 bc. certificate.password=secret
+
+Default: @secret@
 
 
 h2(#cron). Scheduled jobs
@@ -218,14 +224,16 @@ h3(#date.format). date.format
 
 Sets the default date format, using a @java.text.SimpleDateFormat@ pattern. For example:
 
-bc. date.format=yyyy-MM-dd
+bc. date.format=dd-MM-yyyy
+
+Default: @yyyy-MM-dd@
 
 You can also set a different date format for specific languages that you have configured with "application.langs":#application.langs, for example:
 
 bc. date.format.fr=dd-MM-yyyy
 
 
-h2(#db). Database configuration
+h2(#dbconf). Database configuration
 
 h3(#db). db
 
@@ -258,6 +266,8 @@ A generic ‘destroy’ method name. When using an existing Datasource, this is 
 
 bc. db.destroyMethod=close
 
+Default: none.
+
 
 h3(#db.driver). db.driver
 
@@ -265,31 +275,51 @@ Database driver class name, for use with "db.url":#db.url. For example:
 
 bc. db.driver=org.postgresql.Driver
 
+Default:
+
+* @org.h2.Driver@ when "db":#db is set to @mem@ or @fs@, or if "db.url":#db.url  starts with @jdbc:h2:mem:@
+* @com.mysql.jdbc.Driver@ if "db":#db is a @mysql:…@ configuration.
+
 
 h3(#db.pass). db.pass
 
 Database connection password, used with "db.url":#db.url.
 
+Default: no value, or an empty string when "db":#db is set to @mem@ or @fs@. 
+
+
+h3(#db.pool.maxIdleTimeExcessConnections). db.pool.maxIdleTimeExcessConnections
+
+The number of seconds before idle connections beyond "db.pool.minSize":#db.pool.minSize are ‘culled’. See the "c3p0 documentation":http://www.mchange.com/projects/c3p0/#maxIdleTimeExcessConnections.
+
+Default: @0@ - ‘no enforcement’.
+
 
 h3(#db.pool.maxSize). db.pool.maxSize
 
-Connection pool maximum size. For example:
+Connection pool maximum size (number of connections). See the "c3p0 documentation":http://www.mchange.com/projects/c3p0/#maxPoolSize. For example:
 
-bc. db.pool.maxSize=30
+bc. db.pool.maxSize=60
+
+Default: @30@
 
 
 h3(#db.pool.minSize). db.pool.minSize
 
-Connection pool minimum size. For example:
+Connection pool minimum size (number of connections). See the "c3p0 documentation":http://www.mchange.com/projects/c3p0/#minPoolSize. For example:
 
 bc. db.pool.minSize=10
+
+Default: @1@
 
 
 h3(#db.pool.timeout). db.pool.timeout
 
-Connection pool time-out. For example:
+Connection pool time-out in milliseoncds. See the "c3p0 documentation":http://www.mchange.com/projects/c3p0/#checkoutTimeout. For example:
 
-bc. db.pool.timeout=1000
+bc. db.pool.timeout=10000
+
+Default: @5000@
 
 
 h3(#db.url). db.url
@@ -298,10 +328,14 @@ A full JDBC configuration, in combination with "db.user":#db.user, "db.pass":#db
 
 bc. db.url=jdbc:postgresql:database_name
 
+Default: none.
+
 
 h3(#db.user). db.user
 
 Database connection user name, used with "db.url":#db.url.
+
+Default: none, or @sa@ when "db":#db is set to @mem@ or @fs@. 
 
 
 h2(#evolutions). Database evoluations
@@ -420,9 +454,11 @@ Default: @true@
 
 h3(#http.userAgent). http.userAgent
 
-Custom user agent for web services requests.
+Custom @USER_AGENT@ header value for web services requests. For example:
 
-TODO: value passed to @com.ning.http.client.AsyncHttpClientConfig.setUserAgent@
+bc. http.userAgent=myApp 1.0
+
+Defualt: none.
 
 
 h3(#https.port). https.port
@@ -430,6 +466,8 @@ h3(#https.port). https.port
 Enables an HTTPS connector, listening on the specified port. For example:
 
 bc. https.port=9443
+
+Default: none - no HTTPS configuration.
 
 
 h2(#java). Java source
@@ -507,9 +545,17 @@ h2(#keystore). keystore
 
 h3(#keystore.algorithm). keystore.algorithm
 
-Keystore configuration, for use with the "keystore.file":#keystore.file configuration.
+A JDK Security API standard algorithm name, for use with the "keystore.file":#keystore.file configuration.
 
-bc. keystore.algorithm=JKS
+bc. keystore.algorithm=pkcs12
+
+Values - ‘standard names’ from the JDK Security API:
+
+* @jceks@ (‘SunJCE’ provider)
+* @jks@ (‘SUN" provider)
+* @pkcs12@
+
+Default: @JKS@
 
 
 h3(#keystore.file). keystore.file
@@ -524,6 +570,8 @@ h3(#keystore.password). keystore.password
 Keystore configuration, for use with the "keystore.file":#keystore.file configuration.
 
 bc. keystore.password=secret
+
+Default: @secret@
 
 
 h2(#memcachedconfig). Memcached
@@ -627,14 +675,21 @@ To use a GMail SMTP server:
 
 bc. mail.smtp.host=smtp.gmail.com
 
+Default: @localhost@
+
 
 h3(#mail.smtp.localhost). mail.smtp.localhost
 
+Local host name override for SMTP commands.
+
+Default: none - use the Java Mail default.
 
 
 h3(#mail.smtp.pass). mail.smtp.pass
 
 SMTP server password, used with "mail.smtp.host":#mail.smtp.host, e.g. a GMail password.
+
+Default: none.
 
 
 h3(#mail.smtp.port). mail.smtp.port
@@ -642,6 +697,11 @@ h3(#mail.smtp.port). mail.smtp.port
 Port for SMTP server connections, used to override the defaults. For example:
 
 bc. mail.smtp.port=2500
+
+Default:
+
+* @25@ when "mail.smtp.channel":#mail.smtp.channel is set to @clear@ or @starttls@
+* @465@ when "mail.smtp.channel":#mail.smtp.channel is set to @ssl@
 
 
 h3(#mail.smtp.protocol). mail.smtp.protocol
@@ -663,6 +723,8 @@ When using SSL connections with JavaMail, the default SSL behavior is to drop th
 h3(#mail.smtp.user). mail.smtp.user
 
 SMTP server user name, used with "mail.smtp.host":#mail.smtp.host, e.g. a GMail user name.
+
+Default: none.
 
 
 h2(#play). Play run-time
@@ -712,7 +774,7 @@ h3(#play.netty.maxContentLength). play.netty.maxContentLength
 
 HTTP server maximum content length for response streaming, in bytes.
 
-Default: @-1@
+Default: none - no maximum.
 
 
 h3(#play.pool). play.pool
@@ -738,6 +800,7 @@ Values:
 
 Default: @tmp@
 
+
 h2(#ssl). SSL
 
 See also: "https.port":#https.port.
@@ -745,9 +808,11 @@ See also: "https.port":#https.port.
 
 h3(#ssl.KeyManagerFactory.algorithm). ssl.KeyManagerFactory.algorithm
 
-Keystore configuration, for use with the "keystore.file":#keystore.file configuration.
+The standard name of a Java Secure Socket Extension (JSSE) trust management algorithm, for use with the "keystore.file":#keystore.file configuration.
 
 bc. ssl.KeyManagerFactory.algorithm=SunX509
+
+Default: @SunX509@
 
 
 h2(#trustmanager). trustmanager
@@ -755,18 +820,24 @@ h2(#trustmanager). trustmanager
 
 h3(#trustmanager.algorithm). trustmanager.algorithm
 
-Trustmanager configuration, for use with "X509 certificates":#certificate and "keystore":#keystore configurations.
+A JDK Security API standard algorithm name, for use with "X509 certificates":#certificate and "keystore":#keystore configurations.
 
-bc. trustmanager.algorithm=JKS
+bc. trustmanager.algorithm=pkcs12
+
+Values - ‘standard names’ from the JDK Security API:
+
+* @jceks@ (‘SunJCE’ provider)
+* @jks@ (‘SUN" provider)
+* @pkcs12@
+
+Default: @JKS@
 
 
 h2(#upload). File upload
 
 h3(#upload.threshold). upload.threshold
 
-TODO. First parameter to @org.apache.commons.io.output.DeferredFileOutputStream(int, File)@
-
-For example:
+The threshold in bytes at which upload files will be written to disk, for @org.apache.commons.io.output.DeferredFileOutputStream@. For example:
 
 bc. upload.threshold=20480
 
@@ -777,7 +848,7 @@ h2(#xforwarded). Proxy forwarding
 
 h3(#XForwardedHost). XForwardedHost
 
-Host for proxy support.
+Request host for proxy support.
 
 Default: @x-forwarded-host@ HTTP header value.
 
